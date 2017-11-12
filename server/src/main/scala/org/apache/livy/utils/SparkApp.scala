@@ -18,7 +18,7 @@
 package org.apache.livy.utils
 
 import scala.collection.JavaConverters._
-
+import org.apache.livy.{LivyConf, Logging}
 import org.apache.livy.LivyConf
 
 object AppInfo {
