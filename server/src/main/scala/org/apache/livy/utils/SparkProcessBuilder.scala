@@ -203,7 +203,7 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
     info(argsString)
 
     val pb = new ProcessBuilder(arguments.asJava)
-    val env = pb.envinfoironment()
+    val env = pb.environment()
 
     for ((key, value) <- _env) {
       env.put(key, value)
