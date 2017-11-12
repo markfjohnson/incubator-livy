@@ -32,6 +32,7 @@ class SparkProcApp (
   private var state = SparkApp.State.STARTING
 
   override def kill(): Unit = {
+    info("In SparkProcApp - kill()")
     if (process.isAlive) {
       process.destroy()
       waitThread.join()
@@ -42,6 +43,7 @@ class SparkProcApp (
     ("stdout: " +: process.inputLines) ++ ("\nstderr: " +: process.errorLines)
 
   private def changeState(newState: SparkApp.State.Value) = {
+    info("In SparkProcApp - changeState()")
     if (state != newState) {
       listener.foreach(_.stateChanged(state, newState))
       state = newState
@@ -49,6 +51,7 @@ class SparkProcApp (
   }
 
   private val waitThread = Utils.startDaemonThread(s"SparProcApp_$this") {
+    info("In SparkProcApp - WaitThread")
     changeState(SparkApp.State.RUNNING)
     process.waitFor() match {
       case 0 => changeState(SparkApp.State.FINISHED)

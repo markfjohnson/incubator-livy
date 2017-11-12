@@ -87,6 +87,7 @@ object SparkApp {
       process: Option[LineBufferedProcess],
       livyConf: LivyConf,
       listener: Option[SparkAppListener]): SparkApp = {
+    info(s"Is Livy running YARN? ${livyConf.isRunningOnYarn()}")
     if (livyConf.isRunningOnYarn()) {
       new SparkYarnApp(uniqueAppTag, appId, process, listener, livyConf)
     } else {
