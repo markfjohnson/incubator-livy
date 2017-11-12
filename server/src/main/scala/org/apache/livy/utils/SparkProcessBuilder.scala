@@ -196,7 +196,7 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
     arguments += file.getOrElse("spark-internal")
     arguments ++= args
 
-    val argsString = argumentsBatch
+    val argsString = arguments
       .map("'" + _.replace("'", "\\'") + "'")
       .mkString(" ")
 
@@ -207,7 +207,7 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
 
     for ((key, value) <- _env) {
       env.put(key, value)
-      debug(s"    --------- $key, $value ----------")
+      info(s"    --------- $key, $value ----------")
     }
 
     _redirectOutput.foreach(pb.redirectOutput)
