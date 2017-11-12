@@ -170,11 +170,12 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
         arguments += values.mkString(",")
       }
     }
-
+    info("Master = ${_master}")
     addOpt("--master", _master)
     addOpt("--deploy-mode", _deployMode)
     addOpt("--name", _name)
     addOpt("--class", _className)
+    info("Class=${_className}")
     _conf.foreach { case (key, value) =>
       if (key == "spark.submit.pyFiles") {
          arguments += "--py-files"
@@ -195,23 +196,24 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
     arguments += file.getOrElse("spark-internal")
     arguments ++= args
 
-    val argsString = arguments
+    val argsString = argumentsBatch session 
       .map("'" + _.replace("'", "\\'") + "'")
       .mkString(" ")
 
-    info(s"Running $argsString")
+    info("Running $argsString")
 
     val pb = new ProcessBuilder(arguments.asJava)
     val env = pb.environment()
 
     for ((key, value) <- _env) {
       env.put(key, value)
+      debug(s"    --------- $key, $value ----------")
     }
 
     _redirectOutput.foreach(pb.redirectOutput)
     _redirectError.foreach(pb.redirectError)
     _redirectErrorStream.foreach(pb.redirectErrorStream)
-
+    info("***   Calling the LineBufferedProcess with spark-submit arguments")
     new LineBufferedProcess(pb.start(), livyConf.getInt(LivyConf.SPARK_LOGS_SIZE))
   }
 
