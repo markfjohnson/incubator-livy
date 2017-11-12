@@ -196,7 +196,7 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
     arguments += file.getOrElse("spark-internal")
     arguments ++= args
 
-    val argsString = argumentsBatch session 
+    val argsString = argumentsBatch session
       .map("'" + _.replace("'", "\\'") + "'")
       .mkString(" ")
 
