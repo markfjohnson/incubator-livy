@@ -170,12 +170,12 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
         arguments += values.mkString(",")
       }
     }
-    info("Master = ${_master}")
+    info(s"Master = ${_master}")
     addOpt("--master", _master)
     addOpt("--deploy-mode", _deployMode)
     addOpt("--name", _name)
     addOpt("--class", _className)
-    info("Class=${_className}")
+    info(s"Class=${_className}")
     _conf.foreach { case (key, value) =>
       if (key == "spark.submit.pyFiles") {
          arguments += "--py-files"
@@ -200,14 +200,14 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
       .map("'" + _.replace("'", "\\'") + "'")
       .mkString(" ")
 
-    info("Running $argsString")
+    info(argsString)
 
     val pb = new ProcessBuilder(arguments.asJava)
-    val env = pb.environment()
+    val env = pb.envinfoironment()
 
     for ((key, value) <- _env) {
       env.put(key, value)
-      info(s"    --------- $key, $value ----------")
+      info(key)
     }
 
     _redirectOutput.foreach(pb.redirectOutput)
