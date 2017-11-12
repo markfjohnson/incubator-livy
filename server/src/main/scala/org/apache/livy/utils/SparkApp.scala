@@ -88,10 +88,8 @@ object SparkApp {
       livyConf: LivyConf,
       listener: Option[SparkAppListener]): SparkApp = {
     if (livyConf.isRunningOnYarn()) {
-      info("RUNNING IN YARN")
       new SparkYarnApp(uniqueAppTag, appId, process, listener, livyConf)
     } else {
-      info("***NOT RUNNING IN YARN")
       require(process.isDefined, "process must not be None when Livy master is not YARN.")
       new SparkProcApp(process.get, listener)
     }
