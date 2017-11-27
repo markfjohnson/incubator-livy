@@ -192,10 +192,10 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
     }
 
     addOpt("--queue", _queue)
-
+    info(file)
     arguments += file.getOrElse("spark-internal")
     arguments ++= args
-
+    info(arguments)
     val argsString = arguments
       .map("'" + _.replace("'", "\\'") + "'")
       .mkString(" ")
