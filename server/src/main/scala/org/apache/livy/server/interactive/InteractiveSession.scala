@@ -96,14 +96,14 @@ object InteractiveSession extends Logging {
 
       builderProperties.getOrElseUpdate("spark.app.name", s"livy-session-$id")
 
-      info(s"Creating Interactive session $id: [owner: $owner, request: $request]")
+      info(s"XXXX Creating Interactive session $id: [owner: $owner, request: $request]")
       val builder = new LivyClientBuilder()
         .setAll(builderProperties.asJava)
         .setConf("livy.client.session-id", id.toString)
         .setConf(RSCConf.Entry.DRIVER_CLASS.key(), "org.apache.livy.repl.ReplDriver")
         .setConf(RSCConf.Entry.PROXY_USER.key(), proxyUser.orNull)
         .setURI(new URI("rsc:/"))
-
+      info("XXXX Passed LivyClientBuilder")
       Option(builder.build().asInstanceOf[RSCClient])
     }
 
@@ -396,7 +396,7 @@ class InteractiveSession(
         .map(new LineBufferedProcess(_, livyConf.getInt(LivyConf.SPARK_LOGS_SIZE)))
     driverProcess.map { _ => SparkApp.create(appTag, appId, driverProcess, livyConf, Some(this)) }
   }
-
+  info("XXXX I am here")
   if (client.isEmpty) {
     transition(Dead())
     val msg = s"Cannot recover interactive session $id because its RSCDriver URI is unknown."
@@ -415,6 +415,7 @@ class InteractiveSession(
 
     // Send a dummy job that will return once the client is ready to be used, and set the
     // state to "idle" at that point.
+    info("XXX prior to dummy job submission")
     client.get.submit(new PingJob()).addListener(new JobHandle.Listener[Void]() {
       override def onJobQueued(job: JobHandle[Void]): Unit = { }
       override def onJobStarted(job: JobHandle[Void]): Unit = { }
@@ -466,6 +467,7 @@ class InteractiveSession(
 
   override def stopSession(): Unit = {
     try {
+      info("Stopping session")
       transition(SessionState.ShuttingDown())
       sessionStore.remove(RECOVERY_SESSION_TYPE, id)
       client.foreach { _.stop(true) }
@@ -571,6 +573,7 @@ class InteractiveSession(
     // If the session crashed because of the error, the session should instead go to dead state.
     // Since these 2 transitions are triggered by different threads, there's a race condition.
     // Make sure we won't transit from dead to error state.
+    info("XXX Transitioning state")
     val areSameStates = serverSideState.getClass() == newState.getClass()
     val transitFromInactiveToActive = !serverSideState.isActive && newState.isActive
     if (!areSameStates && !transitFromInactiveToActive) {

@@ -192,7 +192,8 @@ class SparkProcessBuilder(livyConf: LivyConf) extends Logging {
     }
 
     addOpt("--queue", _queue)
-    info(file)
+    info("At start of special logging")
+    info("XXXXX Before the spark process builder spark-internal")
     arguments += file.getOrElse("spark-internal")
     arguments ++= args
     info(arguments)

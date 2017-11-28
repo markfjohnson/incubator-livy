@@ -226,13 +226,16 @@ class ContextLauncher {
       }
 
       launcher.setSparkHome(System.getenv(SPARK_HOME_ENV));
+      LOG.info("XXX Setting app resource to spark-internal");
       launcher.setAppResource("spark-internal");
+      LOG.info("XXX Set App resource");
       launcher.setPropertiesFile(confFile.getAbsolutePath());
       launcher.setMainClass(RSCDriverBootstrapper.class.getName());
 
       if (conf.get(PROXY_USER) != null) {
         launcher.addSparkArg("--proxy-user", conf.get(PROXY_USER));
       }
+      LOG.info("XXXX Launcher object {}",launcher);
 
       return new ChildProcess(conf, promise, launcher.launch(), confFile);
     }
